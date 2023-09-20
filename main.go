@@ -1,15 +1,16 @@
 package main
 
 import (
-	"./controller"
-	"./smscode"
 	"os"
 	"strconv"
+
+	"./controller"
+	"./smscode"
 )
 
 func main() {
 	var user smscode.Information
-	_, err := os.Stat("./user.txt")
+	_, err := os.Stat("./user.txt") //检测登录信息是否存在
 	if err == nil {
 		temp, err := os.ReadFile("./user.txt")
 		if err != nil {
