@@ -65,6 +65,7 @@ func Start(user smscode.Information) {
 			}
 		case 3:
 			user.SMSNumber = smscode.GetSMSNumber()
+			user.SendTimes = 0
 		case -1:
 		default:
 			fmt.Print("输入不正确\n")
