@@ -1,16 +1,17 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 
-	"./controller"
-	"./smscode"
+	"main/controller"
+	"main/smscode"
 )
 
 func main() {
 	var user smscode.Information
-	_, err := os.Stat("./user.txt") //检测登录信息是否存在
+	info, err := os.Stat("./user.txt")
 	if err == nil {
 		temp, err := os.ReadFile("./user.txt")
 		if err != nil {
@@ -21,6 +22,9 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
+	} else {
+		fmt.Println(info)
+		panic(err)
 	}
 	controller.Start(user)
 }

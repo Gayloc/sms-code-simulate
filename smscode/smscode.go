@@ -29,9 +29,9 @@ func GetSMSNumber() string {
 	for {
 		fmt.Print("输入电话号码:")
 		fmt.Scan(&SMSNumber)
-		re := regexp.MustCompile("[^0-9]")
+		re := regexp.MustCompile("[0-9]{11}")
 		flag := re.MatchString(SMSNumber) //检查输入格式是否正确
-		if !flag && len(SMSNumber) == 11 {
+		if flag {
 			break
 		} else {
 			fmt.Print("输入不正确\n")
