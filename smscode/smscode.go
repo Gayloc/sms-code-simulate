@@ -68,7 +68,7 @@ func SendSMSCode() ([16]byte, time.Time) {
 	return md5.Sum([]byte(SMSCode)), time.Now()
 }
 
-func GetSMSNumber(user *Information, recorder *Recorder) {
+func (user *Information) GetSMSNumber(recorder *Recorder) { //这里改为使用方法
 	user.SMSNumber = ""
 	for {
 

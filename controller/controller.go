@@ -13,7 +13,7 @@ func Start(user *smscode.Information) {
 	recorder.Runtime = time.Now()        //记录运行的时间
 	recorder.Sendtime = recorder.Runtime //发送时间设定默认值
 
-	smscode.GetSMSNumber(user, &recorder) //提示输入手机号
+	user.GetSMSNumber(&recorder) //提示输入手机号
 
 	menu(user, &recorder)
 }
@@ -57,7 +57,7 @@ func menu(user *smscode.Information, recorder *smscode.Recorder) {
 				fmt.Print("1分钟只能发送一次\n")
 			}
 		case "3":
-			smscode.GetSMSNumber(user, recorder)
+			user.GetSMSNumber(recorder)
 
 		default:
 			fmt.Print("输入不正确\n")
