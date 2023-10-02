@@ -27,10 +27,11 @@ type Recorder struct {
 
 // 接口
 type Data interface {
-	Save(Information)
+	Save()
+	LogIn()
 }
 
-func (i Information) Save(user Information) {
+func (user Information) Save() {
 	temp, err := os.ReadFile("user.txt")
 	if err != err {
 		panic(err)
@@ -56,6 +57,10 @@ func (i Information) Save(user Information) {
 		write.Flush()
 	}
 
+}
+
+func (user Information) LogIn() {
+	fmt.Println(user.SMSNumber + "登录成功")
 }
 
 func SendSMSCode() ([16]byte, time.Time) {
@@ -107,7 +112,7 @@ func (user *Information) GetSMSNumber(recorder *Recorder) { //这里改为使用
 		user.SendTimes = 0
 		recorder.Runtime = time.Now()        //记录运行的时间
 		recorder.Sendtime = recorder.Runtime //发送时间设定默认值
-		user.Save(*user)
+		user.Save()
 	}
 }
 

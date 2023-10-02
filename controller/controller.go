@@ -22,7 +22,7 @@ func menu(user *smscode.Information, recorder *smscode.Recorder) {
 	var data smscode.Data = user //声明并初始化接口变量
 	var selection string
 	user.Date = smscode.GetDate()
-	data.Save(*user)
+	data.Save()
 	for {
 
 		if user.Date != smscode.GetDate() { //与现在不是同一天，则发送次数归零
@@ -39,7 +39,7 @@ func menu(user *smscode.Information, recorder *smscode.Recorder) {
 			fmt.Print("输入验证码登录\n")
 			fmt.Scan(&Input)
 			if md5.Sum([]byte(Input)) == user.SMSCode && time.Since(recorder.Sendtime) <= 5*time.Minute { //检查输入的验证码是否正确或者过期
-				fmt.Print("登录成功\n")
+				data.LogIn()
 				return
 			} else {
 				fmt.Print("验证码错误或过期\n")
@@ -50,7 +50,7 @@ func menu(user *smscode.Information, recorder *smscode.Recorder) {
 				user.SMSCode, recorder.Sendtime = smscode.SendSMSCode()
 				user.SendTimes++
 				user.Date = smscode.GetDate()
-				data.Save(*user) //储存发送次数
+				data.Save() //储存发送次数
 			} else if user.SendTimes >= 5 {
 				fmt.Print("当日发送次数过多\n")
 			} else {
