@@ -19,9 +19,10 @@ func Start(user *smscode.Information) {
 }
 
 func menu(user *smscode.Information, recorder *smscode.Recorder) {
+	var data smscode.Data = user //声明并初始化接口变量
 	var selection string
 	user.Date = smscode.GetDate()
-	smscode.SaveUserInfo(*user)
+	data.Save(*user)
 	for {
 
 		if user.Date != smscode.GetDate() { //与现在不是同一天，则发送次数归零
@@ -49,7 +50,7 @@ func menu(user *smscode.Information, recorder *smscode.Recorder) {
 				user.SMSCode, recorder.Sendtime = smscode.SendSMSCode()
 				user.SendTimes++
 				user.Date = smscode.GetDate()
-				smscode.SaveUserInfo(*user) //储存发送次数
+				data.Save(*user) //储存发送次数
 			} else if user.SendTimes >= 5 {
 				fmt.Print("当日发送次数过多\n")
 			} else {

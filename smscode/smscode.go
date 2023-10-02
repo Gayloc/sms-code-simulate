@@ -12,7 +12,9 @@ import (
 	"time"
 )
 
+// 结构体
 type Information struct {
+	Data
 	SMSNumber string
 	SMSCode   [16]byte
 	SendTimes int
@@ -21,6 +23,39 @@ type Information struct {
 type Recorder struct {
 	Sendtime time.Time
 	Runtime  time.Time
+}
+
+// 接口
+type Data interface {
+	Save(Information)
+}
+
+func (i Information) Save(user Information) {
+	temp, err := os.ReadFile("user.txt")
+	if err != err {
+		panic(err)
+	}
+
+	idx := strings.LastIndex(string(temp), user.SMSNumber)
+
+	if idx != -1 {
+		file, err := os.OpenFile("user.txt", os.O_WRONLY, 0666)
+		if err != nil {
+			panic(err)
+		}
+		defer file.Close()
+		file.WriteAt([]byte("#"+user.SMSNumber+"-"+strconv.FormatInt(int64(user.SendTimes), 10)+"-"+user.Date+"\n"), int64(idx-1))
+	} else {
+		file, err := os.OpenFile("user.txt", os.O_WRONLY|os.O_APPEND, 0666)
+		if err != nil {
+			panic(err)
+		}
+		defer file.Close()
+		write := bufio.NewWriter(file)
+		write.WriteString("#" + user.SMSNumber + "-" + strconv.FormatInt(int64(user.SendTimes), 10) + "-" + user.Date + "\n")
+		write.Flush()
+	}
+
 }
 
 func SendSMSCode() ([16]byte, time.Time) {
@@ -72,7 +107,7 @@ func GetSMSNumber(user *Information, recorder *Recorder) {
 		user.SendTimes = 0
 		recorder.Runtime = time.Now()        //记录运行的时间
 		recorder.Sendtime = recorder.Runtime //发送时间设定默认值
-		SaveUserInfo(*user)
+		user.Save(*user)
 	}
 }
 
@@ -80,34 +115,6 @@ func GetDate() string {
 	year, month, day := time.Now().Date()
 	date := strconv.FormatInt(int64(year), 10) + strconv.FormatInt(int64(month), 10) + strconv.FormatInt(int64(day), 10)
 	return date
-}
-
-func SaveUserInfo(user Information) {
-	temp, err := os.ReadFile("user.txt")
-	if err != err {
-		panic(err)
-	}
-
-	idx := strings.LastIndex(string(temp), user.SMSNumber)
-
-	if idx != -1 {
-		file, err := os.OpenFile("user.txt", os.O_WRONLY, 0666)
-		if err != nil {
-			panic(err)
-		}
-		defer file.Close()
-		file.WriteAt([]byte("#"+user.SMSNumber+"-"+strconv.FormatInt(int64(user.SendTimes), 10)+"-"+user.Date+"\n"), int64(idx-1))
-	} else {
-		file, err := os.OpenFile("user.txt", os.O_WRONLY|os.O_APPEND, 0666)
-		if err != nil {
-			panic(err)
-		}
-		defer file.Close()
-		write := bufio.NewWriter(file)
-		write.WriteString("#" + user.SMSNumber + "-" + strconv.FormatInt(int64(user.SendTimes), 10) + "-" + user.Date + "\n")
-		write.Flush()
-	}
-
 }
 
 func GetIndex(start int, content []byte) [3]int {
